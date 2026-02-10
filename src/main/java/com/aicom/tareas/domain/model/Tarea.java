@@ -10,14 +10,22 @@ public class Tarea {
     private String estado;
     private LocalDateTime fechaCreacion;
 
-    public Tarea(String titulo, String descripcion, String estado){
+    public Tarea(Long id,String titulo, String descripcion, String estado, LocalDateTime fechaCreacion){
+        this.id = id;
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.estado = estado;
-        this.fechaCreacion = LocalDateTime.now();
+        this.fechaCreacion = fechaCreacion;
     }
 
     public Tarea(){}
+
+    public static Tarea paraCrear(String titulo, String descripcion) {
+        Tarea tarea = new Tarea();
+        tarea.setTitulo(titulo);
+        tarea.setDescripcion(descripcion);
+        return tarea;
+    }
 
     public Long getId() {
         return id;
