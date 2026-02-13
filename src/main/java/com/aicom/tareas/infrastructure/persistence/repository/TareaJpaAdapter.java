@@ -20,6 +20,8 @@ public class TareaJpaAdapter implements TareaRepositoryPort {
 
         tareaJPA.setTitulo(tarea.getTitulo());
         tareaJPA.setDescripcion(tarea.getDescripcion());
+        tareaJPA.setEstado(tarea.getEstado());
+        tareaJPA.setFechaCreacion(tarea.getFechaCreacion());
 
         final TareaJPA tareaGuardada = springTareaRepository.save(tareaJPA);
 
