@@ -8,4 +8,6 @@ public interface TareaRepositoryPort {
     Tarea guardar(Tarea tarea);
     List<Tarea> listarTareas();
     Tarea listarPorId(Long id);
+    Tarea cambioParcialTarea(Long id, Tarea tareaCambios);
+    boolean eliminacionTarea(Long id);
 }

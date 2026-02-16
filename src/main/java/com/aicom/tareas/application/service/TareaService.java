@@ -30,4 +30,14 @@ public class TareaService implements TareaUseCase {
     public Tarea obtnerPorId(Long id) {
         return tareaRepositoryPort.listarPorId(id);
     }
+
+    @Override
+    public Tarea actualizarTarea(Long id, Tarea tareaCambios) {
+        return tareaRepositoryPort.cambioParcialTarea(id, tareaCambios);
+    }
+
+    @Override
+    public boolean EliminarTarea(Long id) {
+        return tareaRepositoryPort.eliminacionTarea(id);
+    }
 }

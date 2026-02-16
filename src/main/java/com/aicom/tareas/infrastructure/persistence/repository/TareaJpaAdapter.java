@@ -49,4 +49,34 @@ public class TareaJpaAdapter implements TareaRepositoryPort {
     public Tarea listarPorId(Long id) {
         return springTareaRepository.findById(id).map(tareaMapper::convertTareaJPAtoTarea).orElseThrow(() -> new RuntimeException("Tarea no encontrada"));
     }
+
+    @Override
+    public Tarea cambioParcialTarea(Long id, Tarea tareaCambios) {
+        return springTareaRepository.findById(id)
+                .map(tareaJPA -> {
+                    if(tareaCambios.getTitulo() != null){
+                        tareaJPA.setTitulo(tareaCambios.getTitulo());
+                    }
+                    if(tareaCambios.getDescripcion() != null){
+                        tareaJPA.setDescripcion(tareaCambios.getDescripcion());
+                    }
+                    if(tareaCambios.getEstado() != null){
+                        tareaJPA.setEstado(tareaCambios.getEstado());
+                    }
+
+                    TareaJPA tareaActualizada = springTareaRepository.save(tareaJPA);
+
+                    return tareaMapper.convertTareaJPAtoTarea(tareaActualizada);
+                })
+                .orElse(null);
+    }
+
+    @Override
+    public boolean eliminacionTarea(Long id) {
+        if(springTareaRepository.existsById(id)){
+            springTareaRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
 }

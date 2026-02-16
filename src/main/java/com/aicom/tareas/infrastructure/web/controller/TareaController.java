@@ -3,6 +3,7 @@ package com.aicom.tareas.infrastructure.web.controller;
 import com.aicom.tareas.application.port.in.TareaUseCase;
 import com.aicom.tareas.domain.model.Tarea;
 import com.aicom.tareas.infrastructure.persistence.mapper.TareaMapper;
+import com.aicom.tareas.infrastructure.web.dto.ActualizarTareaRequest;
 import com.aicom.tareas.infrastructure.web.dto.CrearTareaRequest;
 import com.aicom.tareas.infrastructure.web.dto.TareaResponse;
 import org.springframework.http.HttpStatus;
@@ -57,5 +58,39 @@ public class TareaController {
         TareaResponse response = tareaMapper.convertTareaToResponse(tarea);
 
         return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<TareaResponse> update(@PathVariable Long id, @RequestBody ActualizarTareaRequest request){
+
+        Tarea tareaCambios = new Tarea(
+                null,
+                request.titulo(),
+                request.descripcion(),
+                request.estado(),
+                null
+        );
+
+        Tarea tareaActualizada = tareaUseCase.actualizarTarea(id, tareaCambios);
+
+        if(tareaActualizada == null){
+            return ResponseEntity.notFound().build();
+        }
+
+        TareaResponse response = tareaMapper.convertTareaToResponse(tareaActualizada);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminar(@PathVariable Long id){
+
+        boolean eliminada = tareaUseCase.EliminarTarea(id);
+
+        if(!eliminada){
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.noContent().build();
     }
 }
