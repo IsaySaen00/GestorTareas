@@ -27,6 +27,14 @@ public class TareaJPA {
 
     public TareaJPA(){}
 
+    public TareaJPA(Long id, String titulo, String descripcion, String estado, LocalDateTime fechaCreacion) {
+        this.id = id;
+        this.titulo = titulo;
+        this.descripcion = descripcion;
+        this.estado = estado;
+        this.fechaCreacion = fechaCreacion;
+    }
+
     public Long getId() {
         return id;
     }

@@ -18,6 +18,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGeneric(Exception ex){
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ApiError("ERROR", "Error interno"));
+                .body(new ApiError("ERROR", ex.getLocalizedMessage()));
     }
 }

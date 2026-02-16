@@ -3,15 +3,21 @@ package com.aicom.tareas.infrastructure.persistence.repository;
 import com.aicom.tareas.application.port.out.TareaRepositoryPort;
 import com.aicom.tareas.domain.model.Tarea;
 import com.aicom.tareas.infrastructure.persistence.jpa.TareaJPA;
+import com.aicom.tareas.infrastructure.persistence.mapper.TareaMapper;
 import org.springframework.stereotype.Repository;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class TareaJpaAdapter implements TareaRepositoryPort {
 
     private final SpringTareaRepository springTareaRepository;
+    private final TareaMapper tareaMapper;
 
-    public TareaJpaAdapter(SpringTareaRepository springTareaRepository){
+    public TareaJpaAdapter(SpringTareaRepository springTareaRepository, TareaMapper tareaMapper){
         this.springTareaRepository = springTareaRepository;
+        this.tareaMapper = tareaMapper;
     }
 
     @Override
@@ -32,5 +38,15 @@ public class TareaJpaAdapter implements TareaRepositoryPort {
                 tareaGuardada.getEstado(),
                 tareaGuardada.getFechaCreacion()
         );
+    }
+
+    @Override
+    public List<Tarea> listarTareas() {
+        return tareaMapper.toTareaList(springTareaRepository.findAll());
+    }
+
+    @Override
+    public Tarea listarPorId(Long id) {
+        return springTareaRepository.findById(id).map(tareaMapper::convertTareaJPAtoTarea).orElseThrow(() -> new RuntimeException("Tarea no encontrada"));
     }
 }
