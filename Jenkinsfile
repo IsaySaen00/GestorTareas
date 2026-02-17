@@ -16,24 +16,21 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
+        stage('Sonar Analysis') {
             steps {
-                sh """
-                mvn sonar:sonar \
-                -Dsonar.host.url=http://host.docker.internal:9000 \
-                -Dsonar.login=$SONAR_TOKEN
-                """
+                withSonarQubeEnv('SonarLocal') {
+                    sh """
+                    mvn sonar:sonar \
+                    -Dsonar.login=$SONAR_TOKEN
+                    """
+                }
             }
         }
-        stage('Quality Gate'){
-            steps{
-                script{
-                    timeout(time: 2, unit: 'MINUTES'){
-                        def qg = waitForQualityGate()
-                        if(qg.status != 'OK'){
-                            error "Pipeline aborted due to Quality Gate failure: ${qg.status}"
-                        }
-                    }
+
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 2, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
                 }
             }
         }
