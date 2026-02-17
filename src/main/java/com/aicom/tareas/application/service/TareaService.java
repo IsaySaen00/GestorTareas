@@ -37,7 +37,7 @@ public class TareaService implements TareaUseCase {
     }
 
     @Override
-    public boolean EliminarTarea(Long id) {
+    public boolean eliminarTarea(Long id) {
         return tareaRepositoryPort.eliminacionTarea(id);
     }
 }

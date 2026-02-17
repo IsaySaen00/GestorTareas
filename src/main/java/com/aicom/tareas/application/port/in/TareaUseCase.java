@@ -9,5 +9,5 @@ public interface TareaUseCase {
     List<Tarea> obtenerTareas();
     Tarea obtnerPorId(Long id);
     Tarea actualizarTarea(Long id, Tarea tareaCambios);
-    boolean EliminarTarea(Long id);
+    boolean eliminarTarea(Long id);
 }

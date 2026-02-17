@@ -57,10 +57,10 @@ public class TareaServiceTest {
         TareaJPA tareaJPA = new TareaJPA(1L, "Test", "Test con JUnit y Mockito", "Por hacer", null);
         Tarea tarea = new Tarea(1L, "Test", "Test con JUnit y Mockito", "Por hacer", null);
 
-        assertEquals(tarea.getId(), mapper.convertTareaJPAtoTarea(Optional.of(tareaJPA)).getId());
-        assertEquals(tarea.getTitulo(), mapper.convertTareaJPAtoTarea(Optional.of(tareaJPA)).getTitulo());
-        assertEquals(tarea.getDescripcion(), mapper.convertTareaJPAtoTarea(Optional.of(tareaJPA)).getDescripcion());
-        assertEquals(tarea.getEstado(), mapper.convertTareaJPAtoTarea(Optional.of(tareaJPA)).getEstado());
+        assertEquals(tarea.getId(), mapper.convertTareaJPAtoTarea(tareaJPA).getId());
+        assertEquals(tarea.getTitulo(), mapper.convertTareaJPAtoTarea(tareaJPA).getTitulo());
+        assertEquals(tarea.getDescripcion(), mapper.convertTareaJPAtoTarea(tareaJPA).getDescripcion());
+        assertEquals(tarea.getEstado(), mapper.convertTareaJPAtoTarea(tareaJPA).getEstado());
 
     }
 
@@ -80,5 +80,60 @@ public class TareaServiceTest {
 
         assertNotNull(resultado);
         assertEquals(2, resultado.size());
+    }
+
+    @Test
+    void shouldUpdateTask() {
+        Long id = 1L;
+        Tarea tareaConCambios = new Tarea(id, "Titulo Actualizado", "Desc Actualizada", "EN_PROGRESO", null);
+
+        Tarea tareaActualizada = new Tarea(id, "Titulo Actualizado", "Desc Actualizada", "EN_PROGRESO", null);
+
+        when(repository.cambioParcialTarea(eq(id), any(Tarea.class)))
+                .thenReturn(tareaActualizada);
+
+        Tarea resultado = tareaService.actualizarTarea(id, tareaConCambios);
+
+        assertNotNull(resultado);
+        assertEquals("Titulo Actualizado", resultado.getTitulo());
+        assertEquals("EN_PROGRESO", resultado.getEstado());
+
+        verify(repository, times(1)).cambioParcialTarea(eq(id), any(Tarea.class));
+    }
+
+    @Test
+    void shouldReturnNullWhenUpdateNonExistentTask() {
+        Long id = 99L;
+        Tarea tareaConCambios = new Tarea(id, "Titulo", "Desc", "ESTADO", null);
+
+        when(repository.cambioParcialTarea(eq(id), any(Tarea.class))).thenReturn(null);
+
+        Tarea resultado = tareaService.actualizarTarea(id, tareaConCambios);
+
+        assertNull(resultado);
+    }
+
+    @Test
+    void shouldDeleteTask() {
+        Long id = 1L;
+
+        when(repository.eliminacionTarea(id)).thenReturn(true);
+
+        boolean resultado = tareaService.eliminarTarea(id);
+
+        assertTrue(resultado);
+        verify(repository, times(1)).eliminacionTarea(id);
+    }
+
+    @Test
+    void shouldReturnFalseWhenDeleteNonExistentTask() {
+        Long id = 99L;
+
+        when(repository.eliminacionTarea(id)).thenReturn(false);
+
+        boolean resultado = tareaService.eliminarTarea(id);
+
+        assertFalse(resultado);
+        verify(repository, times(1)).eliminacionTarea(id);
     }
 }

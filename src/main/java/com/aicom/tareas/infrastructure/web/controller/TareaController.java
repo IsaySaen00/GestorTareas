@@ -85,7 +85,7 @@ public class TareaController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id){
 
-        boolean eliminada = tareaUseCase.EliminarTarea(id);
+        boolean eliminada = tareaUseCase.eliminarTarea(id);
 
         if(!eliminada){
             return ResponseEntity.notFound().build();
