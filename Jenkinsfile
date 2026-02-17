@@ -10,7 +10,7 @@ pipeline {
     }
 
     stages {
-        stage('Build') {
+        stage('Build & Test') {
             steps {
                 sh 'mvn clean verify'
             }
@@ -23,6 +23,24 @@ pipeline {
                 -Dsonar.host.url=http://host.docker.internal:9000 \
                 -Dsonar.login=$SONAR_TOKEN
                 """
+            }
+        }
+        stage('Quality Gate'){
+            steps{
+                script{
+                    timeout(time: 2, unit: 'MINUTES'){
+                        def qg = waitForQualityGate()
+                        if(qg.status != 'OK'){
+                            error "Pipeline aborted due to Quality Gate failure: ${qg.status}"
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Docker Build'){
+            steps{
+                sh 'docker build -t tareas-app:latest'
             }
         }
     }
