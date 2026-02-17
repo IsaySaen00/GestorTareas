@@ -2,8 +2,11 @@ pipeline {
     agent {
         docker {
             image 'maven:3.9.6-eclipse-temurin-17'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
+    }
+
+    environment {
+        SONAR_TOKEN = credentials('sonar-token')
     }
 
     stages {
@@ -15,9 +18,11 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarLocal') {
-                    sh 'mvn sonar:sonar'
-                }
+                sh """
+                mvn sonar:sonar \
+                -Dsonar.host.url=http://host.docker.internal:9000 \
+                -Dsonar.login=$SONAR_TOKEN
+                """
             }
         }
     }
